@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Вжух</string>
+    <string name="permission_location_rationale">Дайте пожалуйста ваши координаты!</string>
+    <string name="shake">Тряси, чтобы создать битву!\n
+        Ничего не делай, чтобы подключиться!
+    </string>
+</resources>

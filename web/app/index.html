@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ВЖУХ - Легендаронео побоище брутальных магов</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+    <link rel="stylesheet" href="app.css">
+    <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <style>
+        #example {
+            color: #0cff15;
+            background-image: url("img/area_smal.jpg");
+            -webkit-background-image: url("img/area_smal.jpg");
+            border: 1px solid black;
+            width: 2000px;
+            height: 1000px;
+
+            padding: 0;
+            margin: auto;
+
+            display: block;
+
+        }
+    </style>
+
+
+</head>
+<body>
+
+<!-- In production use:
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+-->
+<!--<script src="bower_components/angular/angular.js"></script>-->
+<!--<script src="bower_components/angular-route/angular-route.js"></script>-->
+<!--<script src="bower_components/angular-animate/angular-animate.js"></script>-->
+<!--<script src="bower_components/angular-aria/angular-aria.js"></script>-->
+<!--<script src="bower_components/angular-messages/angular-messages.js"></script>-->
+<!--<script src="app.js"></script>-->
+<!--<script src="view1/view1.js"></script>-->
+<!--<script src="view2/view2.js"></script>-->
+<!--<script src="components/version/version.js"></script>-->
+<!--<script src="components/version/version-directive.js"></script>-->
+<!--<script src="components/version/interpolate-filter.js"></script>-->
+
+<!-- Angular Material Library -->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>-->
+
+
+<!-- Firebase -->
+<!--<script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>-->
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-messaging.js"></script>
+
+
+<!-- AngularFire -->
+<!--<script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>-->
+
+<form id="form" onsubmit="return false;">
+    <input type="text" id="userInput" placeholder="Номер комнаты"/>
+    <input type="submit" value="Найти дуель" onclick="othername();"/>
+</form>
+
+<canvas height='1000' width='2000' id='example'>Обновите браузер</canvas>
+
+
+<script>
+
+    var example = document.getElementById("example"),
+        ctx = example.getContext('2d');
+    example.width = 2000;
+    example.height = 1000;
+
+    var p1Full = 1;
+    var p2Full = 1;
+    var p1Damag = 1;
+    var p2Damag = 1;
+
+    console.log("Start");
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyAj5ZtWvSZW27Ne2ZrbBP8Y2iWeE5JD54Y",
+        authDomain: "battlemage-504d1.firebaseapp.com",
+        databaseURL: "https://battlemage-504d1.firebaseio.com",
+        projectId: "battlemage-504d1",
+        storageBucket: "battlemage-504d1.appspot.com",
+        messagingSenderId: "1069425525626"
+    };
+    var defaultApp = firebase.initializeApp(config);
+    console.log(defaultApp.name);
+    var db = defaultApp.database();
+
+    var roomName = "1";
+    var userID = null;
+    var battleID = null;
+    var flag = true;
+    var gameIsOn = false;
+
+
+    function saveUserName(userId, playerNumber) {
+        var reference = db.ref('users/' + userId).once('value', function (snapshot) {
+            var childData = snapshot.val();
+            console.log("Player " + playerNumber + " name:" + childData.name);
+            if (playerNumber === 1) {
+                p1_name = childData.name
+            } else {
+                p2_name = childData.name
+            }
+        });
+        console.log(reference)
+    }
+
+    function getActiveBattleByUserId(userId) {
+        var key = db.ref('battles').once('value', function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                console.log("Battles count: " + childKey);
+                console.log(childData);
+                if (childData.isActive && (childData.p1 === userId || childData.p2 === userId)) {
+                    console.log(childKey);
+                    return childKey
+                }
+            });
+        });
+        return key;
+    }
+
+        drawLeftUser('img/person1/person1_full.png');
+//    drawLeftUser(get1PlayerFull());
+        drawRightUser('img/person2/full_1.png');
+//    drawRightUser(get2PlayerFull());
+
+
+    var temp_x;
+    var temp_y;
+    var temp_user;
+    var temp_right_user;
+    var temp_mag;
+    var p1_health;
+    var p2_health;
+    var p1_name;
+    var p2_name;
+
+
+    //    pic.onload = animate;
+
+    function drawTravaFromLeft(x, y) {
+        console.log("Draw trava!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/trava.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+    function drawTravaFromLeftRev(x, y) {
+        console.log("Draw trava!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/trava.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+
+    function drawJizaFromLeft(x, y) {
+        console.log("Draw jiza!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/jiza.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+    function drawJizaFromLeftRev(x, y) {
+        console.log("Draw jiza!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/jiza_rev.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+
+    function drawKumarFromLeft(x, y) {
+        console.log("Draw kumar!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/kumar.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+
+    function drawMrakFromLeft(x, y) {
+        console.log("Draw mrak!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/mrak.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+    function drawMrakFromLeftRev(x, y) {
+        console.log("Draw mrak!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/mrak_rev.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+
+    function drawPorchaFromLeft(x, y) {
+        console.log("Draw porcha!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/porcha.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+
+    function drawShizaFromLeft(x, y) {
+        console.log("Draw shiza!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/shiza.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+
+    function drawUgarFromLeft(x, y) {
+        console.log("Draw ugar!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/ugar.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+    function drawUgarFromLeftRev(x, y) {
+        console.log("Draw ugar!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/ugar_rev.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+
+    function drawVodaFromLeft(x, y) {
+        console.log("Draw voda!");
+        mag = new Image();              // "Создаём" изображение
+        mag.src = 'img/magic/voda.png';  // Источник изображения, позаимствовано на хабре
+        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        return mag;
+    }
+
+//    function drawWordJiza(x, y) {
+//        console.log("Draw voda!");
+//        mag = new Image();              // "Создаём" изображение
+//        mag.src = 'img/words/jiza.png';  // Источник изображения, позаимствовано на хабре
+//        mag.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+//            ctx.drawImage(mag, x, y);  // Рисуем изображение от точки с координатами 0, 0
+//        };
+//        return mag;
+//    }
+
+    function reDrawMagic() {
+        ctx.drawImage(temp_mag, temp_x, temp_y);  // Рисуем изображение от точки с координатами 0, 0
+    }
+
+    function pullMagicFromLeft(magicKey) {
+        console.log("Pull magic from left");
+        temp_x = 50;
+        temp_y = 530;
+        switch (magicKey) {
+            case 0:
+                temp_mag = drawMrakFromLeft(temp_x, temp_y);
+                break;
+            case 1:
+                temp_mag = drawKumarFromLeft(temp_x, temp_y);
+                break;
+            case 2:
+                temp_mag = drawTravaFromLeft(temp_x, temp_y);
+                break;
+            case 3:
+                temp_mag = drawJizaFromLeft(temp_x, temp_y);
+                break;
+            case 4:
+                temp_mag = drawVodaFromLeft(temp_x, temp_y);
+                break;
+            case 5:
+                temp_mag = drawPorchaFromLeft(temp_x, temp_y);
+                break;
+            case 6:
+                temp_mag = drawUgarFromLeft(temp_x, temp_y);
+                break;
+            case 7:
+                temp_mag = drawShizaFromLeft(temp_x, temp_y);
+                break;
+        }
+        drawLeftUser('img/person1/person1_damag.png');
+//        drawLeftUser(get1PlayerDamag());
+
+        console.log("Animate");
+        animate()
+    }
+
+    function pullMagicFromRight(magicKey) {
+        console.log("Pull magic from right");
+        temp_x = 1650;
+        temp_y = 530;
+        switch (magicKey) {
+            case 0:
+                temp_mag = drawMrakFromLeftRev(temp_x, temp_y);
+                break;
+            case 1:
+                temp_mag = drawKumarFromLeft(temp_x, temp_y);
+                break;
+            case 2:
+                temp_mag = drawTravaFromLeftRev(temp_x, temp_y);
+                break;
+            case 3:
+                temp_mag = drawJizaFromLeftRev(temp_x, temp_y);
+                break;
+            case 4:
+                temp_mag = drawVodaFromLeft(temp_x, temp_y);
+                break;
+            case 5:
+                temp_mag = drawPorchaFromLeft(temp_x, temp_y);
+                break;
+            case 6:
+                temp_mag = drawUgarFromLeftRev(temp_x, temp_y);
+                break;
+            case 7:
+                temp_mag = drawShizaFromLeft(temp_x, temp_y);
+                break;
+        }
+        drawRightUser('img/person2/damag_2.png');
+//        drawRightUser(get2PlayerDamag());
+
+        console.log("Animate");
+        animateRight()
+    }
+
+    function animateRight() {
+        ctx.clearRect(0, 0, example.width, example.height);  // clear canvas
+        reDrawMagic(temp_x, temp_y);
+        reDrawUsers();
+
+        temp_x -= 20;
+        if (temp_x > 100) {
+            requestAnimationFrame(animateRight)
+        } else {
+//            temp_mag = null;
+            ctx.clearRect(0, 0, example.width, example.height);  // clear canvas
+            drawRightUser('img/person2/full_2.png');
+//            drawRightUser(get2PlayerFull());
+            drawLeftUser('img/person1/person1_full.png');
+//            drawLeftUser(get1PlayerFull);
+        }     // loop
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, example.width, example.height);  // clear canvas
+        reDrawMagic(temp_x, temp_y);
+        reDrawUsers();
+
+        temp_x += 20;
+        if (temp_x < 1500) {
+            requestAnimationFrame(animate)
+        } else {
+//            temp_mag = null;
+            ctx.clearRect(0, 0, example.width, example.height);  // clear canvas
+                        drawRightUser('img/person2/full_2.png');
+//            drawRightUser(get2PlayerFull());
+            drawLeftUser('img/person1/person1_full.png');
+//            drawLeftUser(get1PlayerFull);
+        }     // loop
+    }
+
+    function drawLeftUser(url) {
+        x1 = 300;
+        y1 = 500;
+        user1 = new Image();              // "Создаём" изображение
+        user1.src = url;  // Источник изображения, позаимствовано на хабре
+        user1.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(user1, x1, y1);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        temp_user = user1;
+        drawLabels();
+    }
+
+    function drawRightUser(url) {
+        x2 = 1500;
+        y2 = 500;
+        user2 = new Image();              // "Создаём" изображение
+        user2.src = url;  // Источник изображения, позаимствовано на хабре
+        user2.onload = function () {    // Событие onLoad, ждём момента пока загрузится изображение
+            ctx.drawImage(user2, x2, y2);  // Рисуем изображение от точки с координатами 0, 0
+        };
+        temp_right_user = user2;
+        drawLabels();
+    }
+
+    function reDrawUsers() {
+        xL = 300;
+        yLR = 500;
+        ctx.drawImage(temp_user, xL, yLR);  // Рисуем изображение от точки с координатами 0, 0
+        xR = 1500;
+        ctx.drawImage(temp_right_user, xR, yLR);  // Рисуем изображение от точки с координатами 0, 0
+        drawLabels()
+    }
+
+    function drawLabels() {
+        //todo: label
+        ctx.font = "40px Arial";
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'black';
+        ctx.fillText("Номер комнаты: " + roomName, 450, 50);
+        ctx.fillText(p2_name + ":" + p2_health + " HP", 1550, 450);
+        ctx.fillText(p1_name + ":" + p1_health + " HP", 20, 250);
+    }
+
+    function othername() {
+        console.log(roomName);
+        roomName = document.getElementById("userInput").value;
+
+
+        console.log(roomName);
+        var battleId = roomName + "p";
+        p1_health = 20;
+        p2_health = 20;
+        gameIsOn = true;
+
+        var commentsRef = firebase.database().ref('battles');
+        commentsRef.on('child_changed', function (data) {
+            console.log("chdnged");
+            var message = data.val();
+            console.log(message);
+            if (!gameIsOn) {
+                console.log("Game is offline");
+                return
+            }
+            if (data.key !== battleId) {
+                console.log("Id not equals. " + data.key + "!==" + battleId);
+                return
+            }
+            if (!message.isActive) {
+                console.log("Game ended");
+//                gameIsOn = false;
+                return;
+            }
+
+            console.log("Turn: " + message.turn);
+            console.log("p1_health : " + p1_health);
+            console.log("message.p1H : " + message.p1H);
+
+            console.log("p2_health : " + p2_health);
+            console.log("message.p2H : " + message.p2H);
+
+
+            if (message.turn === 0 && p1_health === message.p1H && p2_health !== message.p2H) {
+                pullMagicFromLeft(message.p1p0);
+                console.log("LEFT")
+            } else if (p1_health !== message.p1H && p2_health === message.p2H) {
+                pullMagicFromRight(message.p2p0);
+                console.log("RIGHT")
+            }
+
+            saveUserName(message.p1, 1);
+            saveUserName(message.p2, 2);
+
+            p1_health = message.p1H;
+            p2_health = message.p2H;
+        });
+    }
+
+
+    function get1PlayerFull() {
+        console.log(p1Full);
+        p1Full = p1Full + 1;
+        if (p1Full > 3) {
+            p1Full = 1;
+        }
+        return 'img/person1/person'.concat(parseInt(p1Full)).concat('_full.png')
+    }
+
+    function get1PlayerDamag() {
+        p1Damag = p1Damag + 1;
+        if (p1Damag > 4) {
+            p1Damag = 1;
+        }
+        return "img/person1/person" + p1Damag + "_damag.png"
+    }
+
+    function get2PlayerFull() {
+        p2Full = p2Full + 1;
+        if (p2Full > 2) {
+            p2Full = 1;
+        }
+        return "img/person2/full_" + p2Full + ".png"
+    }
+
+    function get2PlayerDamag() {
+        p2Damag = p2Damag + 1;
+        if (p2Damag > 2) {
+            p2Damag = 1;
+        }
+        return "img/person2/damag_" + p2Damag + ".png"
+    }
+
+</script>
+
+
+</body>
+</html>

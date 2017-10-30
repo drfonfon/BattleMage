@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.glomadrian.grav.GravView
+            android:id="@+id/grav"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:animationGenerators="@array/BallWaveAnimations"
+            app:array_colors="@array/red"
+            app:ball_size="3dp"
+            app:ball_size_from_size="1dp"
+            app:ball_size_to_size="4dp"
+            app:colorGenerator="com.github.glomadrian.grav.generator.paint.ArrayColorGenerator"
+            app:gravGenerator="com.github.glomadrian.grav.generator.grav.BallGenerator"
+            app:pointGenerator="com.github.glomadrian.grav.generator.point.RegularPointGenerator"
+            app:regular_cell_size="100"
+            app:regular_variance="100"
+            app:shake_direction="horizontal"
+            app:shake_variance="100dp"
+            app:side_to_side_direction="downToUp"
+            app:side_to_side_max_duration="5000"
+            app:side_to_side_min_duration="2000"
+            />
+
+        <su.levenetc.android.textsurface.TextSurface
+            android:id="@+id/text_surface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="224dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/t1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Противник"
+            android:textSize="18sp"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/t2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="8dp"
+            android:text="Это ты"
+            android:textSize="18sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:id="@+id/info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="invisible"
+                >
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/image_magic"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    app:srcCompat="@drawable/ic_krovyaka"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_magic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:text="Кровяка"
+                    android:textSize="18sp"/>
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="8dp"
+                    app:srcCompat="@drawable/ic_sword"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_damage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:text="0"
+                    android:textSize="18sp"/>
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="8dp"
+                    app:srcCompat="@drawable/ic_scream"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_damage_scream"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:text="0"
+                    android:textSize="18sp"/>
+
+            </LinearLayout>
+
+            <com.liulishuo.magicprogresswidget.MagicProgressBar
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                app:mpb_background_color="#191818"
+                app:mpb_fill_color="#F44336"
+                app:mpb_flat="true"
+                app:mpb_percent="30"/>
+
+            <FrameLayout
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/text_turn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Ход противника"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp"
+                    android:visibility="gone"/>
+
+                <com.fonfon.battlemage.lib.TapView
+                    android:id="@+id/tapView"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:padding="16dp"
+                    app:srcCompat="@drawable/ic_alchemy"/>
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="28dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/image_opponent"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                app:srcCompat="@drawable/img_head1_left"/>
+
+            <com.fonfon.battlemage.lib.ImageStackLayout
+                android:id="@+id/opponent_lives"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:isl_count="20"
+                app:isl_image="@drawable/ic_heart"
+                app:isl_maxCount="25"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginTop="28dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageMe"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                app:srcCompat="@drawable/img_head1_right"/>
+
+            <com.fonfon.battlemage.lib.ImageStackLayout
+                android:id="@+id/you_lives"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:isl_count="20"
+                app:isl_image="@drawable/ic_heart"
+                app:isl_maxCount="25"/>
+
+        </LinearLayout>
+
+        <com.fonfon.battlemage.ui.ShutterView
+            android:id="@+id/shutterView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+</layout>

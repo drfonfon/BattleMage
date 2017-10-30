@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LoadingButton">
+        <attr name="lb_btnColor" format="reference|color" />
+        <attr name="lb_btnText" format="reference|string" />
+        <attr name="lb_textColor" format="reference|color" />
+        <attr name="lb_resetAfterFailed" format="boolean" />
+        <attr name="lb_btnRippleColor" format="reference|color" />
+        <attr name="lb_btnRippleAlpha" format="float" />
+        <attr name="lb_btnDisabledColor" format="reference|color" />
+        <attr name="lb_disabledTextColor" format="reference|color" />
+    </declare-styleable>
+
+    <declare-styleable name="ImageStackLayout">
+        <attr name="isl_maxCount" format="integer"/>
+        <attr name="isl_count" format="integer"/>
+        <attr name="isl_image" format="reference"/>
+    </declare-styleable>
+</resources>

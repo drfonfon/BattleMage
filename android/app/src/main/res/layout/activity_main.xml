@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.glomadrian.grav.GravView
+            android:id="@+id/grav"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:animationGenerators="@array/BubbleAnimations"
+            app:array_colors="@array/bubble"
+            app:ball_from_size="10dp"
+            app:ball_to_size="20dp"
+            app:colorGenerator="com.github.glomadrian.grav.generator.paint.ArrayColorGenerator"
+            app:gravGenerator="com.github.glomadrian.grav.generator.grav.BallGenerator"
+            app:pointGenerator="com.github.glomadrian.grav.generator.point.RegularPointGenerator"
+            app:regular_cell_size="300"
+            app:regular_variance="200"
+            app:shake_direction="vertical"
+            app:shake_max_duration="20000"
+            app:shake_min_duration="10000"
+            app:shake_variance="500dp"
+            app:side_to_side_direction="leftToRight"
+            app:side_to_side_max_duration="10000"
+            app:side_to_side_min_duration="10000"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Имя"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                />
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/buttonBattleCreate"
+                android:layout_width="300dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:text="Создать батл"
+                android:textAllCaps="false"
+                android:textSize="24sp"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/buttonBattleConnect"
+                android:layout_width="300dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:text="Подключиться"
+                android:textAllCaps="false"
+                android:textSize="24sp"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/buttonTraining"
+                android:layout_width="300dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:text="Тренировка"
+                android:textAllCaps="false"
+                android:textSize="24sp"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</layout>
